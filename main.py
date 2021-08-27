@@ -2,6 +2,8 @@ import time
 from random import randint
 from threading import Thread
 
+#Fábio Franz, Minéia Maschio e Paulo Ricardo Medeiros Gonçalves
+
 #Classe Processo
 class Processo():
     def __init__(self, id):
@@ -49,7 +51,7 @@ class Processo():
 
     def processa_recurso(self):
         coordenador = self.coordenador
-        if coordenador is not None and coordenador.isRecursoHabilitado == False:
+        if coordenador is not None:
             print(f'******** Coordenador {coordenador.id} concede acesso ao processo {self.id}')
             print(f'{self.tag} Iniciado processo do recurso!')
             coordenador.isRecursoHabilitado = True
@@ -103,10 +105,10 @@ class Processos(Singleton):
             while valida == False:
                 ran_id = randint(0, 2048)
                 valida = self.verifica_id_existente(ran_id)
-                processo = Processo(ran_id)
-                processo.set_coordenador(self.get_coordenador())
-                self.processos.append(processo)
-                time.sleep(40)
+            processo = Processo(ran_id)
+            processo.set_coordenador(self.get_coordenador())
+            self.processos.append(processo)
+            time.sleep(40)
 
     def inativa_coordenador(self):
         while(True):
@@ -164,21 +166,6 @@ class Processos(Singleton):
             if i.id == id:
                 return False
         return True
-
-    def processa_recurso(self, processo):
-        coordenador = self.processos[0].coordenador
-        if coordenador is not None and coordenador.isRecursoHabilitado == False:
-            print(f'******** Coordenador {coordenador.id} concede acesso ao processo {processo.id}')
-            print(f'{processo.tag} Iniciado processo do recurso!')
-            coordenador.isRecursoHabilitado = True
-            sleep = randint(20, 25)
-            time.sleep(sleep)
-            print(f'{processo.tag} Recurso processado em {sleep}s!')
-            print(
-                f'******** O processo {processo.id} informa ao coordenador que o recurso foi liberado')
-            print('\n')
-            coordenador.isRecursoHabilitado = False
-            self.remover_fila(coordenador, processo)
 
     def run(self):
         Thread(target=self.gera_processo).start()
